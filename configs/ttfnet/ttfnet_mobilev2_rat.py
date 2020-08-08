@@ -10,22 +10,21 @@ model = dict(
         style='pytorch'),
     neck=None,
     bbox_head=dict(
-        type='TTFHead',
+        type='TTFHeadv2',
         inplanes=(24, 32, 96, 320),
-        planes=(96, 32, 24),
-        head_conv=128,
-        wh_conv=64,
-        hm_head_conv_num=2,
-        wh_head_conv_num=1,
+        fpn_outplane=32,
+        asff_outplane=32,
+        ssh_outplane=24,
         num_classes=1,
-        wh_offset_base=16,
+        wh_area_process='log',
         wh_agnostic=True,
         wh_gaussian=True,
-        shortcut_cfg=(1, 2, 3),
-        norm_cfg=dict(type='BN'),
         alpha=0.54,
+        beta=0.54,
         hm_weight=1.,
-        wh_weight=5.))
+        wh_weight=5.,
+        max_objs=128,)
+    )
 cudnn_benchmark = True
 # training and testing settings
 train_cfg = dict(
@@ -35,8 +34,8 @@ test_cfg = dict(
     score_thr=0.01,
     max_per_img=100)
 # dataset settings
-dataset_type = 'CocoDataset'
-data_root = 'data/coco/'
+dataset_type = 'RatsDataset'
+data_root = 'home/data/18/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
@@ -69,19 +68,20 @@ data = dict(
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        ann_file=data_root + 'annotations/instances_train2017.json',
-        img_prefix=data_root + 'train2017/',
+        ann_file= 'rat_image_id.json',
+        img_prefix=data_root,
         pipeline=train_pipeline),
-    val=dict(
-        type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
-        pipeline=test_pipeline),
-    test=dict(
-        type=dataset_type,
-        ann_file=data_root + 'annotations/instances_val2017.json',
-        img_prefix=data_root + 'val2017/',
-        pipeline=test_pipeline))
+    # val=dict(
+    #     type=dataset_type,
+    #     ann_file=data_root + 'annotations/instances_val2017.json',
+    #     img_prefix=data_root + 'val2017/',
+    #     pipeline=test_pipeline),
+    # test=dict(
+    #     type=dataset_type,
+    #     ann_file=data_root + 'annotations/instances_val2017.json',
+    #     img_prefix=data_root + 'val2017/',
+    #     pipeline=test_pipeline)
+    )
 # optimizer
 optimizer = dict(type='SGD', lr=0.016, momentum=0.9, weight_decay=0.0004,
                  paramwise_options=dict(bias_lr_mult=2., bias_decay_mult=0.))
@@ -105,7 +105,7 @@ total_epochs = 12
 device_ids = range(8)
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = './work_dirs/ttfnet18_1x'
+work_dir = '/project/train/log/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
