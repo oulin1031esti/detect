@@ -39,7 +39,7 @@ class TTFHead(AnchorHead):
                  hm_weight=1.,
                  wh_weight=5.,
                  max_objs=128):
-        super(AnchorHead, self).__init__()
+        super(TTFHead, self).__init__()
         assert len(planes) in [2, 3, 4]
         shortcut_num = min(len(inplanes) - 1, len(planes))
         assert shortcut_num == len(shortcut_cfg)
@@ -286,7 +286,7 @@ class TTFHead(AnchorHead):
 
         masked_heatmap = heatmap[y - top:y + bottom, x - left:x + right]
         masked_gaussian = gaussian[h_radius - top:h_radius + bottom,
-                          w_radius - left:w_radius + right]
+                                   w_radius - left:w_radius + right]
         if min(masked_gaussian.shape) > 0 and min(masked_heatmap.shape) > 0:
             torch.max(masked_heatmap, masked_gaussian * k, out=masked_heatmap)
         return heatmap
