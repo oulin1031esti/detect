@@ -1,8 +1,10 @@
+import os
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torchvision.models._utils as _utils
 import torchvision.models as models
+from mmcv.cnn import constant_init, kaiming_init
 import math
 
 from mmdet.models.registry import BACKBONES
@@ -60,7 +62,7 @@ class InvertedResidual(nn.Module):
 @BACKBONES.register_module
 class MobileNetV2(nn.Module):
     def __init__(self, num_classes=1000, width_mult=1.0, inverted_residual_setting=None,
-                 ound_nearest=8, out_indices=None, frozen_stages=-1, norm_eval=True):
+                 round_nearest=8, out_indices=None, frozen_stages=-1, norm_eval=True):
         super(MobileNetV2, self).__init__()
         block = InvertedResidual
         input_channel = 32

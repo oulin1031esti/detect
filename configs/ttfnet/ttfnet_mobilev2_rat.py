@@ -93,19 +93,20 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=1.0 / 5,
     step=[9, 11])
-checkpoint_config = dict(interval=4)
+checkpoint_config = dict(interval=4, outdir="/project/train/models/final/")
 log_config = dict(
     interval=20,
     hooks=[
-        dict(type='TextLoggerHook'),
+        dict(type='TextLoggerHook', ),
+        dict(type='TensorboardLoggerHook', log_dir="/project/train/log/"),
     ])
 # yapf:enable
 # runtime settings
-total_epochs = 12
-device_ids = range(8)
+total_epochs = 27
+device_ids = range(1)
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = '/project/train/log/'
+work_dir = '/project/train/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
