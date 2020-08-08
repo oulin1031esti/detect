@@ -5,6 +5,9 @@ import torchvision.models._utils as _utils
 import torchvision.models as models
 import math
 
+from mmdet.models.registry import BACKBONES
+
+
 def _make_divisible(v, divisor, min_value=None):
     if min_value is None:
         min_value = divisor
@@ -53,10 +56,11 @@ class InvertedResidual(nn.Module):
         else:
             return self.conv(x)
 
+
 @BACKBONES.register_module
 class MobileNetV2(nn.Module):
-    def __init__(self, num_classes=1000, width_mult=1.0, inverted_residual_setting=None, round_nearest=8, out_indices=None,
-        frozen_stages=-1,norm_eval=True):
+    def __init__(self, num_classes=1000, width_mult=1.0, inverted_residual_setting=None,
+                 ound_nearest=8, out_indices=None, frozen_stages=-1, norm_eval=True):
         super(MobileNetV2, self).__init__()
         block = InvertedResidual
         input_channel = 32
@@ -112,7 +116,7 @@ class MobileNetV2(nn.Module):
             self.classifier = nn.Sequential(
                 nn.Dropout(0.2),
                 nn.Linear(self.last_channel, num_classes),
-        )
+            )
 
         # weight initialization
         for m in self.modules():
@@ -126,7 +130,7 @@ class MobileNetV2(nn.Module):
             elif isinstance(m, nn.Linear):
                 nn.init.normal_(m.weight, 0, 0.01)
                 nn.init.zeros_(m.bias)
-        
+
     def init_weights(self, pretrained=None):
         if isinstance(pretrained, str):
             import torch
@@ -171,4 +175,3 @@ class MobileNetV2(nn.Module):
             for m in self.modules():
                 if isinstance(m, nn.BatchNorm2d):
                     m.eval()
-
