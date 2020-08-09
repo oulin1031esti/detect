@@ -1,13 +1,13 @@
 # model settings
 model = dict(
     type='TTFNet',
-    pretrained='',
+    pretrained=None,
     backbone=dict(
         type='MobileNetV2',
-        out_indices=(2, 3, 5, 7),
+        out_indices=(1, 2, 4, 6),
         frozen_stages=-1,
-        norm_eval=False,
-        style='pytorch'),
+        norm_eval=False
+        ),
     neck=None,
     bbox_head=dict(
         type='TTFHeadv2',
@@ -15,7 +15,7 @@ model = dict(
         fpn_outplane=32,
         asff_outplane=32,
         ssh_outplane=24,
-        num_classes=1,
+        num_classes=2,
         wh_area_process='log',
         wh_agnostic=True,
         wh_gaussian=True,
@@ -35,7 +35,7 @@ test_cfg = dict(
     max_per_img=100)
 # dataset settings
 dataset_type = 'RatsDataset'
-data_root = 'home/data/18/'
+data_root = '/home/data/18/'
 img_norm_cfg = dict(
     mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 train_pipeline = [
@@ -64,11 +64,11 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    imgs_per_gpu=16,
+    imgs_per_gpu=2,
     workers_per_gpu=2,
     train=dict(
         type=dataset_type,
-        ann_file= 'rat_image_id.json',
+        ann_file= '/project/train/rat_image_id.txt',
         img_prefix=data_root,
         pipeline=train_pipeline),
     # val=dict(
@@ -93,12 +93,11 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=1.0 / 5,
     step=[9, 11])
-checkpoint_config = dict(interval=4, outdir="/project/train/models/final/")
+checkpoint_config = dict(interval=4, out_dir="/project/train/models/final/")
 log_config = dict(
     interval=20,
     hooks=[
-        dict(type='TextLoggerHook', ),
-        dict(type='TensorboardLoggerHook', log_dir="/project/train/log/"),
+        dict(type='TextLoggerHook', )
     ])
 # yapf:enable
 # runtime settings
