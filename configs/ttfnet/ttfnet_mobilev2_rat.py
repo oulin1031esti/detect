@@ -41,7 +41,7 @@ img_norm_cfg = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations', with_bbox=True),
-    dict(type='Resize', img_scale=(512, 512), keep_ratio=False),
+    dict(type='Resize', img_scale=(512, 768), keep_ratio=False),
     dict(type='RandomFlip', flip_ratio=0.5),
     dict(type='Normalize', **img_norm_cfg),
     dict(type='Pad', size_divisor=32),
@@ -52,7 +52,7 @@ test_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(
         type='MultiScaleFlipAug',
-        img_scale=(512, 512),
+        img_scale=(800, 800),
         flip=False,
         transforms=[
             dict(type='Resize', keep_ratio=False),
@@ -64,8 +64,8 @@ test_pipeline = [
         ])
 ]
 data = dict(
-    imgs_per_gpu=2,
-    workers_per_gpu=2,
+    imgs_per_gpu=8,
+    workers_per_gpu=4,
     train=dict(
         type=dataset_type,
         ann_file= '/project/train/rat_image_id.txt',
@@ -101,11 +101,11 @@ log_config = dict(
     ])
 # yapf:enable
 # runtime settings
-total_epochs = 27
+total_epochs = 50
 device_ids = range(1)
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
-work_dir = '/project/train/'
+work_dir = '/project/train/log/'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
