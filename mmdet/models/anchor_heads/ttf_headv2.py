@@ -170,8 +170,6 @@ class TTFHeadv2(AnchorHead):
             self, inplanes=(24, 32, 96, 320), fpn_outplane=32, asff_outplane=32, ssh_outplane=24,
             num_classes=2, wh_area_process='log', wh_agnostic=True, wh_gaussian=True,
             alpha=0.54, beta=0.54, hm_weight=1., wh_weight=5., max_objs=128, **kwargs):
-        # kwargs["num_classes"] = num_classes
-        # kwargs["in_channels"] = 
         super(AnchorHead, self).__init__(**kwargs)
         self.num_classes = num_classes
         self.wh_area_process = wh_area_process
@@ -182,17 +180,16 @@ class TTFHeadv2(AnchorHead):
         self.hm_weight = hm_weight
         self.wh_weight = wh_weight
         self.max_objs = max_objs
-        
+
         self.base_loc = None
         self.num_fg = num_classes - 1
         self.wh_planes = 4 if wh_agnostic else 4 * self.num_fg
-
 
         self.fpn = FPN(inplanes, fpn_outplane)
         self.asff = ASFF(fpn_outplane, asff_outplane)
         self.ssh = SSH(asff_outplane, ssh_outplane)
         self.conv_bn = conv_bn(ssh_outplane, ssh_outplane, 1)
-        self.head_hm = nn.Sequential(nn.Conv2d(ssh_outplane, num_classes+1, 1))
+        self.head_hm = nn.Sequential(nn.Conv2d(ssh_outplane, self.num_fg, 1))
         self.head_wh = nn.Sequential(nn.Conv2d(ssh_outplane, 4, 1))
         # self.head_hm.bias.data.fill_(-2.19)
 
