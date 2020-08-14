@@ -22,7 +22,7 @@ model = dict(
         alpha=0.54,
         beta=0.54,
         hm_weight=1.,
-        wh_weight=5.,
+        wh_weight=1.,
         max_objs=128,)
     )
 cudnn_benchmark = True
@@ -83,7 +83,7 @@ data = dict(
     #     pipeline=test_pipeline)
     )
 # optimizer
-optimizer = dict(type='SGD', lr=0.016, momentum=0.9, weight_decay=0.0004,
+optimizer = dict(type='SGD', lr=0.01, momentum=0.9, weight_decay=0.0004,
                  paramwise_options=dict(bias_lr_mult=2., bias_decay_mult=0.))
 optimizer_config = dict(grad_clip=dict(max_norm=35, norm_type=2))
 # learning policy
@@ -92,7 +92,7 @@ lr_config = dict(
     warmup='linear',
     warmup_iters=500,
     warmup_ratio=1.0 / 5,
-    step=[9, 11])
+    step=[43, 47])
 checkpoint_config = dict(interval=4, out_dir="/project/train/models/final/")
 log_config = dict(
     interval=20,
