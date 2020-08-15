@@ -1,7 +1,7 @@
 # model settings
 model = dict(
     type='TTFNet',
-    pretrained=None,
+    pretrained="/project/train/src_repo/detect/premodels/mobilenet_v2-b0353104.pth",
     backbone=dict(
         type='MobileNetV2',
         out_indices=(1, 2, 4, 6),
@@ -22,7 +22,7 @@ model = dict(
         alpha=0.54,
         beta=0.54,
         hm_weight=1.,
-        wh_weight=1.,
+        wh_weight=5.,
         max_objs=128,)
     )
 cudnn_benchmark = True
@@ -93,7 +93,7 @@ lr_config = dict(
     warmup_iters=500,
     warmup_ratio=1.0 / 5,
     step=[43, 47])
-checkpoint_config = dict(interval=4, out_dir="/project/train/models/final/")
+checkpoint_config = dict(interval=10, out_dir="/project/train/models/final/")
 log_config = dict(
     interval=20,
     hooks=[
